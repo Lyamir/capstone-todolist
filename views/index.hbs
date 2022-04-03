@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Todo List</title>
+  <link rel="stylesheet" type = "text/css" href="/css/global.css">
+  <link rel="stylesheet" type = "text/css" href="/css/index.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"> 
+</head>
+<body>
+  <form action="/" method="POST">
+    <input type="text" id="title" name="title" placeholder="task name">
+    <label>Due Date</label> <input type="date" name="dueDate" id="dueDate">
+    <button type="submit">add</button>
+  </form>
+  <form action="/update" method="GET">
+    <button type="submit">complete all</button>
+  </form>
+  <br>
+  <table>
+    <tr>
+      <th>Task</th>
+      <th>Due Date</th>
+      <th>Status</th>
+      <th>Change Status?</th>
+      <th>Delete?</th>
+    </tr>
+    {{#each items}}
+      <tr>
+        <td>{{title}}</td>
+        <td>{{dueDate}}</td>
+        {{#if complete}}
+          <td>completed</td>
+        {{else}}
+          <td>incomplete</td>
+        {{/if}}
+        <td>
+          <form action="/update/{{id}}" method="post">
+            <input type="hidden" id="complete" name="complete" value="{{complete}}">
+            <button type="submit">change</button>
+          </form>
+        </td>
+        <td>
+          <form action="/delete/{{id}}">
+          <button type="submit">delete</button>
+          </form>
+        </td>
+      </tr>
+    {{/each}}
+  </table>
+</body>
+</html>
