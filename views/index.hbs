@@ -13,8 +13,8 @@
 </head>
 <body>
   <form action="/" method="POST">
-    <input type="text" id="title" name="title" placeholder="task name">
-    <label>Due Date</label> <input type="date" name="dueDate" id="dueDate">
+    <input type="text" id="title" name="title" placeholder="task name" required>
+    <label>Due Date</label> <input type="datetime-local" name="dueDate" id="dueDate" required>
     <button type="submit">add</button>
   </form>
   <form action="/update" method="GET">
