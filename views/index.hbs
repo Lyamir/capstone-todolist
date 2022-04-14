@@ -32,21 +32,21 @@
     {{#each items}}
       <tr>
         <td>{{title}}</td>
-        <td>{{dueDate}}</td>
+        <td id="{{title}}/{{dueDate}}">{{dueDate}}</td>
         {{#if complete}}
-          <td>completed</td>
+          <td id="status/{{title}}">completed</td>
         {{else}}
-          <td>incomplete</td>
+          <td id="status/{{title}}">incomplete</td>
         {{/if}}
         <td>
           <form action="/update/{{id}}" method="post">
             <input type="hidden" id="complete" name="complete" value="{{complete}}">
-            <button type="submit">change</button>
+            <button id="submitbtn/{{title}}" type="submit">change</button>
           </form>
         </td>
         <td>
           <form action="/delete/{{id}}">
-          <button type="submit">delete</button>
+          <button id="deletebtn/{{title}}" type="submit">delete</button>
           </form>
         </td>
       </tr>

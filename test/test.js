@@ -14,10 +14,10 @@ function makeid(length) {
     return result;
 }
 
-let item = {
+let task = {
     name:makeid(10),
-    date:"01012023",
-    time:"1200AM"
+    date:"01/01/2023",
+    time:"915AM"
 }
 
 let address = "http://localhost:3000" //to be changed
@@ -47,26 +47,69 @@ describe("Unit Tests", async function(){
     before(function(){
         connected.should.be.true;
     });
-    it("It should add an item", async function(){
+    it("It should add a task", async function(){
         let options = new firefox.Options();
         options.addArguments("-headless");
         let driver = await new Builder().forBrowser("firefox").setFirefoxOptions(options).build();
          
         await driver.get(address);
 
-        await driver.findElement(By.id("title")).sendKeys(item.name);
+        console.log("Task ID: "+task.name);
+
+        await driver.findElement(By.id("title")).sendKeys(task.name);
         let dateInput = await driver.findElement(By.id("dueDate"))
         await dateInput.click();
-        await dateInput.sendKeys(item.date, Key.TAB, item.time);
+        await dateInput.sendKeys(task.date.replace('/', ''), Key.TAB, task.time);
 
         await driver.findElement(By.xpath("/html/body/form[1]/button")).click();
 
         await driver.get(address);
 
-        let testName = await driver.findElements(By.xpath("//*[contains(text(), \""+item.name+"\")]"));
-
+        let testName = await driver.findElements(By.xpath("//*[contains(text(), \""+task.name+"\")]"));
+        let testDate = await driver.findElements(By.id(task.name+"/"+task.date+" "+task.time));
         try{
             testName.should.not.be.empty;
+            testDate.should.not.be.empty;
+        }
+        catch{
+            passed = false;
+        }
+
+        await driver.quit();
+    });
+
+    it("It should change task status", async function(){
+        let options = new firefox.Options();
+        options.addArguments("-headless");
+        let driver = await new Builder().forBrowser("firefox").setFirefoxOptions(options).build();
+         
+        await driver.get(address);
+
+        await driver.findElement(By.id("submitbtn/"+task.name)).click();
+        let status = await driver.findElement(By.id("status/"+task.name)).getText();
+
+        try{
+            status.should.be.equal.toString("complete");
+        }
+        catch{
+            passed = false;
+        }
+
+        await driver.quit();
+    });
+    it("It should delete the created task", async function(){
+        let options = new firefox.Options();
+        options.addArguments("-headless");
+        let driver = await new Builder().forBrowser("firefox").setFirefoxOptions(options).build();
+         
+        await driver.get(address);
+
+        await driver.findElement(By.id("deletebtn/"+task.name)).click();
+
+        let deletedtask = await driver.findElements(By.xpath("//*[contains(text(), \""+task.name+"\")]"));
+
+        try{
+            deletedtask.should.be.empty;
         }
         catch{
             passed = false;
