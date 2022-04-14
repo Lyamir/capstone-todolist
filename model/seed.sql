@@ -4,7 +4,7 @@ USE capstone_todolist;
 CREATE TABLE IF NOT EXISTS `items` (
   `id` int NOT NULL AUTO_INCREMENT,
   `title` text,
-  `dueDate` date,
+  `dueDate` VARCHAR(45),
   `complete` boolean,
   PRIMARY KEY (`id`) 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;

@@ -7,10 +7,30 @@ const routerFunctions = {
         res.sendStatus(500).send({
           message: err.message || "Error"
         })
-      else
+      else {
+        data.forEach(item => {
+          var fields = item.dueDate.split("-");
+          var year = fields[0]
+          var month = fields[1]
+          var day = fields[2].split("T")[0]
+          var time = fields[2].split("T")[1]
+          var hour = time.split(":")[0]
+          var minute = time.split(":")[1]
+          var ampm
+          if (hour > 12){
+            hour -= 12
+            ampm = "PM"
+          }
+          else
+            ampm = "AM"
+
+          item.dueDate = (`${month}/${day}/${year} ${hour}:${minute}${ampm}`)
+        })
         res.render('index', {
           items: data
         })
+      }
+
     })
   },
 
