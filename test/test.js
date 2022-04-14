@@ -23,12 +23,14 @@ let item = {
 let address = "http://localhost:3000" //to be changed
 
 let connected = true;
+let passed = true;
 
 describe("Testing Connection", async function(){
     it("Application should be running", async function(){
         let options = new firefox.Options();
         options.addArguments("-headless");
         let driver = await new Builder().forBrowser("firefox").setFirefoxOptions(options).build();
+         
         try{
             await driver.get(address);
 
@@ -41,7 +43,7 @@ describe("Testing Connection", async function(){
     });
 });
 
-describe.only("Unit Tests", async function(){
+describe("Unit Tests", async function(){
     before(function(){
         connected.should.be.true;
     });
@@ -49,10 +51,8 @@ describe.only("Unit Tests", async function(){
         let options = new firefox.Options();
         options.addArguments("-headless");
         let driver = await new Builder().forBrowser("firefox").setFirefoxOptions(options).build();
+         
         await driver.get(address);
-
-        console.log("name "+item.name);
-        console.log("date "+item.date);
 
         await driver.findElement(By.id("title")).sendKeys(item.name);
         let dateInput = await driver.findElement(By.id("dueDate"))
@@ -65,7 +65,12 @@ describe.only("Unit Tests", async function(){
 
         let testName = await driver.findElements(By.xpath("//*[contains(text(), \""+item.name+"\")]"));
 
-        testName.should.not.be.empty;
+        try{
+            testName.should.not.be.empty;
+        }
+        catch{
+            passed = false;
+        }
 
         await driver.quit();
     });
@@ -73,11 +78,13 @@ describe.only("Unit Tests", async function(){
 describe("Integration Tests", async function(){
     before(function(){
         connected.should.be.true;
+        passed.should.be.true;
     });
     it("second test", async function(){
         let options = new firefox.Options();
         options.addArguments("-headless");
         let driver = await new Builder().forBrowser("firefox").setFirefoxOptions(options).build();
+         
         await driver.get(address);
 
         await driver.quit();
