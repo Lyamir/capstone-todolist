@@ -17,7 +17,13 @@ function makeid(length) {
 let task = {
     name:makeid(10),
     date:"01/01/2023",
-    time:"915AM"
+    time:"09:15AM"
+}
+
+let intTask = {
+    name:makeid(10),
+    date:"02/02/2024",
+    time:"11:30AM"
 }
 
 let address = "http://localhost:3000" //to be changed
@@ -59,7 +65,7 @@ describe("Unit Tests", async function(){
         await driver.findElement(By.id("title")).sendKeys(task.name);
         let dateInput = await driver.findElement(By.id("dueDate"))
         await dateInput.click();
-        await dateInput.sendKeys(task.date.replace('/', ''), Key.TAB, task.time);
+        await dateInput.sendKeys(task.date.replace('/', ''), Key.TAB, task.time.replace(':',''));
 
         await driver.findElement(By.xpath("/html/body/form[1]/button")).click();
 
@@ -67,12 +73,15 @@ describe("Unit Tests", async function(){
 
         let testName = await driver.findElements(By.xpath("//*[contains(text(), \""+task.name+"\")]"));
         let testDate = await driver.findElements(By.id(task.name+"/"+task.date+" "+task.time));
+        
         try{
             testName.should.not.be.empty;
             testDate.should.not.be.empty;
         }
-        catch{
+        catch(e){
             passed = false;
+            console.log("entered1");
+            throw new Error(e);
         }
 
         await driver.quit();
@@ -91,8 +100,10 @@ describe("Unit Tests", async function(){
         try{
             status.should.be.equal.toString("complete");
         }
-        catch{
+        catch(e){
             passed = false;
+            console.log("entered2");
+            throw new Error(e);
         }
 
         await driver.quit();
@@ -111,8 +122,10 @@ describe("Unit Tests", async function(){
         try{
             deletedtask.should.be.empty;
         }
-        catch{
+        catch(e){
             passed = false;
+            console.log("entered3");
+            throw new Error(e);
         }
 
         await driver.quit();
@@ -123,12 +136,40 @@ describe("Integration Tests", async function(){
         connected.should.be.true;
         passed.should.be.true;
     });
-    it("second test", async function(){
+    it("Integration Testing", async function(){
         let options = new firefox.Options();
         options.addArguments("-headless");
         let driver = await new Builder().forBrowser("firefox").setFirefoxOptions(options).build();
          
         await driver.get(address);
+
+        console.log("Task ID: "+intTask.name);
+
+        await driver.findElement(By.id("title")).sendKeys(intTask.name);
+        let dateInput = await driver.findElement(By.id("dueDate"))
+        await dateInput.click();
+        await dateInput.sendKeys(intTask.date.replace('/', ''), Key.TAB, intTask.time.replace(':',''));
+
+        await driver.findElement(By.xpath("/html/body/form[1]/button")).click();
+
+        await driver.get(address);
+
+        let testName = await driver.findElements(By.xpath("//*[contains(text(), \""+intTask.name+"\")]"));
+        let testDate = await driver.findElements(By.id(intTask.name+"/"+intTask.date+" "+intTask.time));
+        
+        testName.should.not.be.empty;
+        testDate.should.not.be.empty;
+
+        await driver.findElement(By.id("submitbtn/"+intTask.name)).click();
+        let status = await driver.findElement(By.id("status/"+intTask.name)).getText();
+
+        status.should.be.equal.toString("complete");
+
+        await driver.findElement(By.id("deletebtn/"+intTask.name)).click();
+
+        let deletedtask = await driver.findElements(By.xpath("//*[contains(text(), \""+intTask.name+"\")]"));
+
+        deletedtask.should.be.empty;
 
         await driver.quit();
     });
