@@ -80,7 +80,6 @@ describe("Unit Tests", async function(){
         }
         catch(e){
             passed = false;
-            console.log("entered1");
             throw new Error(e);
         }
 
@@ -102,7 +101,6 @@ describe("Unit Tests", async function(){
         }
         catch(e){
             passed = false;
-            console.log("entered2");
             throw new Error(e);
         }
 
@@ -124,7 +122,27 @@ describe("Unit Tests", async function(){
         }
         catch(e){
             passed = false;
-            console.log("entered3");
+            throw new Error(e);
+        }
+
+        await driver.quit();
+    });
+    it("It should mark all tasks as complete", async function(){
+        let options = new firefox.Options();
+        options.addArguments("-headless");
+        let driver = await new Builder().forBrowser("firefox").setFirefoxOptions(options).build();
+         
+        await driver.get(address);
+
+        await driver.findElement(By.id("completeAll")).click();
+
+        let incompleteTasks = await driver.findElements(By.xpath("//*[contains(text(), \"incomplete\")]"));
+
+        try{
+            incompleteTasks.should.be.empty;
+        }
+        catch(e){
+            passed = false;
             throw new Error(e);
         }
 
