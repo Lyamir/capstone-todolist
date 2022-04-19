@@ -5,7 +5,7 @@ pipeline{
         NEXUS_ADDRESS = 'localhost:8085'
         IMAGE = 'capstone_todolist'
         TAG = '1.0'
-        DEPLOYED_CONTAINER = 'containerized_blogsite'
+        DEPLOYED_CONTAINER = 'containerized_todolist'
         PROD_IP_ADD = '192.168.56.102'
         CONTAINER_IP = '172.18.0.5'
         CONTAINER_PORT = '8012'
