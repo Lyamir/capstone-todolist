@@ -1,3 +1,4 @@
+const { expect } = require("chai");
 const { List } = require("mocha/lib/reporters");
 const {Builder, By, Key, ulit, WebDriver, Webelement, WebElement} = require ("selenium-webdriver");
 const firefox = require("selenium-webdriver/firefox");
@@ -15,6 +16,12 @@ function makeid(length) {
 }
 
 let task = {
+    name:makeid(10),
+    date:"01/01/2023",
+    time:"09:15AM"
+}
+
+let task2 = {
     name:makeid(10),
     date:"01/01/2023",
     time:"09:15AM"
@@ -97,7 +104,7 @@ describe("Unit Tests", async function(){
         let status = await driver.findElement(By.id("status/"+task.name)).getText();
 
         try{
-            status.should.be.equal.toString("complete");
+            expect(status).to.equal("completed");
         }
         catch(e){
             passed = false;
@@ -133,13 +140,23 @@ describe("Unit Tests", async function(){
         let driver = await new Builder().forBrowser("firefox").setFirefoxOptions(options).build();
          
         await driver.get(address);
+        console.log("Task2: "+task2.name);
+
+        await driver.findElement(By.id("title")).sendKeys(task2.name);
+        let dateInput = await driver.findElement(By.id("dueDate"))
+        await dateInput.click();
+        await dateInput.sendKeys(task.date.replace('/', ''), Key.TAB, task2.time.replace(':',''));
+
+        await driver.findElement(By.xpath("/html/body/form[1]/button")).click();
 
         await driver.findElement(By.id("completeAll")).click();
 
         let incompleteTasks = await driver.findElements(By.xpath("//*[contains(text(), \"incomplete\")]"));
-
+        let taskStatus = await driver.findElement(By.id("status/"+task2.name)).getText();
+        console.log(taskStatus);
         try{
             incompleteTasks.should.be.empty;
+            expect(taskStatus).to.equal("completed");
         }
         catch(e){
             passed = false;
