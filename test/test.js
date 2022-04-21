@@ -4,6 +4,8 @@ const {Builder, By, Key, ulit, WebDriver, Webelement, WebElement} = require ("se
 const firefox = require("selenium-webdriver/firefox");
 const should = require("chai").should();
 
+let address = "http://localhost:8012" //to be changed
+
 function makeid(length) {
     var result           = '';
     var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -33,8 +35,6 @@ let intTask = {
     time:"11:30AM"
 }
 
-let address = "http://localhost:3000" //to be changed
-
 let connected = true;
 let passed = true;
 
@@ -43,7 +43,7 @@ describe("Testing Connection", async function(){
         let options = new firefox.Options();
         options.addArguments("-headless");
         let driver = await new Builder().forBrowser("firefox").setFirefoxOptions(options).build();
-         
+        console.log("Address: "+address);
         try{
             await driver.get(address);
 
@@ -55,11 +55,10 @@ describe("Testing Connection", async function(){
         }
     });
 });
-
+before(function(){
+    connected.should.be.true;
+});
 describe("Unit Tests", async function(){
-    before(function(){
-        connected.should.be.true;
-    });
     it("It should add a task", async function(){
         let options = new firefox.Options();
         options.addArguments("-headless");
@@ -166,11 +165,12 @@ describe("Unit Tests", async function(){
         await driver.quit();
     });
 });
+before(function(){
+    connected.should.be.true;
+    passed.should.be.true;
+});
 describe("Integration Tests", async function(){
-    before(function(){
-        connected.should.be.true;
-        passed.should.be.true;
-    });
+    
     it("Integration Testing", async function(){
         let options = new firefox.Options();
         options.addArguments("-headless");
