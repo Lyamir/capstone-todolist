@@ -60,7 +60,7 @@ pipeline{
         stage("Deployment"){
             steps{
                 //Prepare container to be deployed.
-                sh "docker save $NEXUS_ADDRESS/$IMAGE > ./ignore-this/blogsite.tar"
+                sh "docker save $NEXUS_ADDRESS/$IMAGE > ./ignore-this/todolist.tar"
                 
                 //Stops the build container
                 sh '''

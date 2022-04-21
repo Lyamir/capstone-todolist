@@ -139,7 +139,7 @@ describe("Unit Tests", async function(){
         let driver = await new Builder().forBrowser("firefox").setFirefoxOptions(options).build();
          
         await driver.get(address);
-        console.log("Task2: "+task2.name);
+        console.log("Task2 ID: "+task2.name);
 
         await driver.findElement(By.id("title")).sendKeys(task2.name);
         let dateInput = await driver.findElement(By.id("dueDate"))
