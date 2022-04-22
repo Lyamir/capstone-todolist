@@ -170,7 +170,7 @@ describe("Unit Tests", async function(){
 
 //         await driver.quit();
 //     });
-// });
+});
 before(function(){
     connected.should.be.true;
     passed.should.be.true;
