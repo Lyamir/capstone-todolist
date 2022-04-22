@@ -139,38 +139,38 @@ describe("Unit Tests", async function(){
 
         await driver.quit();
     });
-    it("It should mark all tasks as complete", async function(){
-        let options = new firefox.Options();
-        options.addArguments("-headless");
-        let driver = await new Builder().forBrowser("firefox").setFirefoxOptions(options).build();
+//     it("It should mark all tasks as complete", async function(){
+//         let options = new firefox.Options();
+//         options.addArguments("-headless");
+//         let driver = await new Builder().forBrowser("firefox").setFirefoxOptions(options).build();
          
-        await driver.get(address);
-        console.log("Task2 ID: "+task2.name);
+//         await driver.get(address);
+//         console.log("Task2 ID: "+task2.name);
 
-        await driver.findElement(By.id("title")).sendKeys(task2.name);
-        let dateInput = await driver.findElement(By.id("dueDate"))
-        await dateInput.click();
-        await dateInput.sendKeys(task2.date.replace('/', ''), Key.TAB, task2.time.replace(':',''));
+//         await driver.findElement(By.id("title")).sendKeys(task2.name);
+//         let dateInput = await driver.findElement(By.id("dueDate"))
+//         await dateInput.click();
+//         await dateInput.sendKeys(task2.date.replace('/', ''), Key.TAB, task2.time.replace(':',''));
 
-        await driver.findElement(By.xpath("/html/body/form[1]/button")).click();
+//         await driver.findElement(By.xpath("/html/body/form[1]/button")).click();
 
-        await driver.findElement(By.id("completeAll")).click();
+//         await driver.findElement(By.id("completeAll")).click();
 
-        let incompleteTasks = await driver.findElements(By.xpath("//*[contains(text(), \"incomplete\")]"));
-        let taskStatus = await driver.findElement(By.id("status/"+task2.name)).getText();
-        console.log(taskStatus);
-        try{
-            incompleteTasks.should.be.empty;
-            expect(taskStatus).to.equal("completed");
-        }
-        catch(e){
-            passed = false;
-            throw new Error(e);
-        }
+//         let incompleteTasks = await driver.findElements(By.xpath("//*[contains(text(), \"incomplete\")]"));
+//         let taskStatus = await driver.findElement(By.id("status/"+task2.name)).getText();
+//         console.log(taskStatus);
+//         try{
+//             incompleteTasks.should.be.empty;
+//             expect(taskStatus).to.equal("completed");
+//         }
+//         catch(e){
+//             passed = false;
+//             throw new Error(e);
+//         }
 
-        await driver.quit();
-    });
-});
+//         await driver.quit();
+//     });
+// });
 before(function(){
     connected.should.be.true;
     passed.should.be.true;
@@ -231,25 +231,25 @@ describe("Integration Tests", async function(){
 
         deletedtask.should.be.empty;
 
-        await driver.get(address);
-        console.log("Task2 ID: "+intTask2.name);
+        // await driver.get(address);
+        // console.log("Task2 ID: "+intTask2.name);
 
-        await driver.findElement(By.id("title")).sendKeys(intTask2.name);
-        let dateInput = await driver.findElement(By.id("dueDate"))
-        await dateInput.click();
-        await dateInput.sendKeys(intTask2.date.replace('/', ''), Key.TAB, intTask2.time.replace(':',''));
+        // await driver.findElement(By.id("title")).sendKeys(intTask2.name);
+        // let dateInput = await driver.findElement(By.id("dueDate"))
+        // await dateInput.click();
+        // await dateInput.sendKeys(intTask2.date.replace('/', ''), Key.TAB, intTask2.time.replace(':',''));
 
-        await driver.findElement(By.xpath("/html/body/form[1]/button")).click();
+        // await driver.findElement(By.xpath("/html/body/form[1]/button")).click();
 
-        await driver.findElement(By.id("completeAll")).click();
+        // await driver.findElement(By.id("completeAll")).click();
 
-        let incompleteTasks = await driver.findElements(By.xpath("//*[contains(text(), \"incomplete\")]"));
-        let taskStatus = await driver.findElement(By.id("status/"+intTask2.name)).getText();
+        // let incompleteTasks = await driver.findElements(By.xpath("//*[contains(text(), \"incomplete\")]"));
+        // let taskStatus = await driver.findElement(By.id("status/"+intTask2.name)).getText();
         
-        console.log(taskStatus);
+        // console.log(taskStatus);
         
-        incompleteTasks.should.be.empty;
-        expect(taskStatus).to.equal("completed");
+        // incompleteTasks.should.be.empty;
+        // expect(taskStatus).to.equal("completed");
 
         await driver.quit();
     });

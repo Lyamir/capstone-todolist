@@ -4,7 +4,7 @@ pipeline{
     environment{
         NEXUS_ADDRESS = 'localhost:8085'
         IMAGE = 'capstone_todolist'
-        TAG = '1.0'
+        TAG = '1.1'
         DEPLOYED_CONTAINER = 'containerized_todolist'
         PROD_IP_ADD = '192.168.56.102'
         CONTAINER_IP = '172.18.0.5'
@@ -79,7 +79,7 @@ pipeline{
                 sh '''
                     [ -d ~/.ssh ] || mkdir ~/.ssh && chmod 0700 ~/.ssh
                     ssh-keyscan -t rsa,dsa \$PROD_IP_ADD >> ~/.ssh/known_hosts
-                    ssh -tt caikit@\$PROD_IP_ADD 'if [ $(docker ps -a -f name=containerized_todolist | grep -o containerized_todolist) ]; then docker stop containerized_todolist; docker rm containerized_todolist; fi; docker load < /home/caikit/ftp/files/todolist.tar; docker run -d -p 8012:3000 --restart unless-stopped --net mynetwork --ip 172.18.0.5 --name containerized_todolist localhost:8085/capstone_todolist:1.0; docker system prune -f'
+                    ssh -tt caikit@\$PROD_IP_ADD 'if [ $(docker ps -a -f name=containerized_todolist | grep -o containerized_todolist) ]; then docker stop containerized_todolist; docker rm containerized_todolist; fi; docker load < /home/caikit/ftp/files/todolist.tar; docker run -d -p 8012:3000 --net mynetwork --ip 172.18.0.5 --name containerized_todolist localhost:8085/capstone_todolist:1.0; docker system prune -f'
                 '''
                 }
 
