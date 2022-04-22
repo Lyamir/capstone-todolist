@@ -54,7 +54,7 @@ Item.changeStatus = (item, result) => {
 }
 
 Item.completeAll = (result) => {
-  db.query(("UPDATE item SET complete = 1"), (err, res) => {
+  db.query(("UPDATE items SET complete = 1"), (err, res) => {
     if (err){
       console.log("error: ", err)
       result(err, null)

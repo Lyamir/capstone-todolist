@@ -133,6 +133,8 @@ describe("Unit Tests", async function(){
 
         await driver.quit();
     });
+    //1st Code: Unit test for complete all feature
+
 });
 before(function(){
     connected.should.be.true;
@@ -174,6 +176,9 @@ describe("Integration Tests", async function(){
         let deletedtask = await driver.findElements(By.xpath("//*[contains(text(), \""+intTask.name+"\")]"));
 
         deletedtask.should.be.empty;
+
+        //2nd Code: Integrated test procedure for complete all feature
+
 
         await driver.quit();
     });
