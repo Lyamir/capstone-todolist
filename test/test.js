@@ -4,7 +4,7 @@ const {Builder, By, Key, ulit, WebDriver, Webelement, WebElement} = require ("se
 const firefox = require("selenium-webdriver/firefox");
 const should = require("chai").should();
 
-let address = "http://localhost:8012" //to be changed
+let address = "http://localhost:3000" //to be changed
 
 function makeid(length) {
     var result           = '';
@@ -69,7 +69,7 @@ describe("Unit Tests", async function(){
         let options = new firefox.Options();
         options.addArguments("-headless");
         let driver = await new Builder().forBrowser("firefox").setFirefoxOptions(options).build();
-         
+            
         await driver.get(address);
 
         console.log("Task ID: "+task.name);
@@ -109,7 +109,7 @@ describe("Unit Tests", async function(){
         let options = new firefox.Options();
         options.addArguments("-headless");
         let driver = await new Builder().forBrowser("firefox").setFirefoxOptions(options).build();
-         
+            
         await driver.get(address);
 
         await driver.findElement(By.id("submitbtn/"+task.name)).click();
@@ -125,32 +125,12 @@ describe("Unit Tests", async function(){
 
         await driver.quit();
     });
-    it("It should delete the created task", async function(){
-        let options = new firefox.Options();
-        options.addArguments("-headless");
-        let driver = await new Builder().forBrowser("firefox").setFirefoxOptions(options).build();
-         
-        await driver.get(address);
 
-        await driver.findElement(By.id("deletebtn/"+task.name)).click();
-
-        let deletedtask = await driver.findElements(By.xpath("//*[contains(text(), \""+task.name+"\")]"));
-
-        try{
-            deletedtask.should.be.empty;
-        }
-        catch(e){
-            passed = false;
-            throw new Error(e);
-        }
-
-        await driver.quit();
-    });
     it("It should mark all tasks as complete", async function(){
         let options = new firefox.Options();
         options.addArguments("-headless");
         let driver = await new Builder().forBrowser("firefox").setFirefoxOptions(options).build();
-         
+            
         await driver.get(address);
         console.log("Task2 ID: "+task2.name);
 
@@ -165,7 +145,6 @@ describe("Unit Tests", async function(){
 
         let incompleteTasks = await driver.findElements(By.xpath("//*[contains(text(), \"incomplete\")]"));
         let taskStatus = await driver.findElement(By.id("status/"+task2.name)).getText();
-        console.log(taskStatus);
         
         try{
             incompleteTasks.should.be.empty;
@@ -185,20 +164,43 @@ describe("Unit Tests", async function(){
 
         await driver.quit();
     });
+    it("It should delete the created task", async function(){
+        let options = new firefox.Options();
+        options.addArguments("-headless");
+        let driver = await new Builder().forBrowser("firefox").setFirefoxOptions(options).build();
+            
+        await driver.get(address);
+
+        await driver.findElement(By.id("deletebtn/"+task.name)).click();
+        await driver.findElement(By.id("deletebtn/"+task2.name)).click();
+
+        let deletedtask = await driver.findElements(By.xpath("//*[contains(text(), \""+task.name+"\")]"));
+        let deletedtask2 = await driver.findElements(By.xpath("//*[contains(text(), \""+task2.name+"\")]"));
+
+        try{
+            deletedtask.should.be.empty;
+            deletedtask2.should.be.empty;
+        }
+        catch(e){
+            passed = false;
+            throw new Error(e);
+        }
+
+        await driver.quit();
+    });
 });
 before(function(){
     connected.should.be.true;
     passed.should.be.true;
 });
-describe("Integration Tests", async function(){
-    
-    it("Integration Testing", async function(){
+describe("Integration Testing", async function(){
+    it("Task creation", async function(){
         let options = new firefox.Options();
         options.addArguments("-headless");
         let driver = await new Builder().forBrowser("firefox").setFirefoxOptions(options).build();
-         
+            
         await driver.get(address);
-
+        //Add a task
         console.log("Task ID: "+intTask.name);
 
         await driver.findElement(By.id("title")).sendKeys(intTask.name);
@@ -208,7 +210,32 @@ describe("Integration Tests", async function(){
 
         await driver.findElement(By.xpath("/html/body/form[1]/button")).click();
 
+        //Change task status
         await driver.get(address);
+
+        await driver.findElement(By.id("submitbtn/"+intTask.name)).click();
+        let status = await driver.findElement(By.id("status/"+intTask.name)).getText();
+
+        let testName = await driver.findElements(By.xpath("//*[contains(text(), \""+intTask.name+"\")]"));
+        let testDate = await driver.findElements(By.id(intTask.name+"/"+intTask.date+" "+intTask.time));
+
+        try{
+            testName.should.not.be.empty;
+            testDate.should.not.be.empty;
+            
+            expect(status).to.equal("completed");
+        }
+        catch(e){
+            throw new Error(e);
+        }
+
+        await driver.quit();
+    });
+    it("Complete all tasks", async function(){
+        let options = new firefox.Options();
+        options.addArguments("-headless");
+        let driver = await new Builder().forBrowser("firefox").setFirefoxOptions(options).build();
+            
         await driver.get(address);
         console.log("Task2 ID: "+intTask2.name);
 
@@ -223,48 +250,41 @@ describe("Integration Tests", async function(){
 
         let incompleteTasks = await driver.findElements(By.xpath("//*[contains(text(), \"incomplete\")]"));
         let taskStatus = await driver.findElement(By.id("status/"+intTask2.name)).getText();
-        
-        console.log(taskStatus);
-        
-        incompleteTasks.should.be.empty;
-        expect(taskStatus).to.equal("completed");
 
-        let testName = await driver.findElements(By.xpath("//*[contains(text(), \""+intTask.name+"\")]"));
-        let testDate = await driver.findElements(By.id(intTask.name+"/"+intTask.date+" "+intTask.time));
-        
-        testName.should.not.be.empty;
-        testDate.should.not.be.empty;
+        try{
+            incompleteTasks.should.be.empty;
+            expect(taskStatus).to.equal("completed");
+        }
+        catch(e){
+            throw new Error(e);
+        }
 
+        await driver.quit();
+    });
+    it("Delete created tasks", async function(){
+        let options = new firefox.Options();
+        options.addArguments("-headless");
+        let driver = await new Builder().forBrowser("firefox").setFirefoxOptions(options).build();
+            
+        await driver.get(address);
         await driver.findElement(By.id("submitbtn/"+intTask.name)).click();
         let status = await driver.findElement(By.id("status/"+intTask.name)).getText();
 
         status.should.be.equal.toString("complete");
 
         await driver.findElement(By.id("deletebtn/"+intTask.name)).click();
+        await driver.findElement(By.id("deletebtn/"+intTask2.name)).click();
 
         let deletedtask = await driver.findElements(By.xpath("//*[contains(text(), \""+intTask.name+"\")]"));
+        let deletedtask2 = await driver.findElements(By.xpath("//*[contains(text(), \""+intTask2.name+"\")]"));
 
-        deletedtask.should.be.empty;
-
-        await driver.get(address);
-        console.log("Task2 ID: "+intTask2.name);
-
-        await driver.findElement(By.id("title")).sendKeys(intTask2.name);
-        let dateInput = await driver.findElement(By.id("dueDate"))
-        await dateInput.click();
-        await dateInput.sendKeys(intTask2.date.replace('/', ''), Key.TAB, intTask2.time.replace(':',''));
-
-        await driver.findElement(By.xpath("/html/body/form[1]/button")).click();
-
-        await driver.findElement(By.id("completeAll")).click();
-
-        let incompleteTasks = await driver.findElements(By.xpath("//*[contains(text(), \"incomplete\")]"));
-        let taskStatus = await driver.findElement(By.id("status/"+intTask2.name)).getText();
-        
-        console.log(taskStatus);
-        
-        incompleteTasks.should.be.empty;
-        expect(taskStatus).to.equal("completed");
+        try{
+            deletedtask.should.be.empty;
+            deletedtask2.should.be.empty;
+        }
+        catch(e){
+            throw new Error(e);
+        }
 
         await driver.quit();
     });
