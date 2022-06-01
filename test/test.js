@@ -82,17 +82,6 @@ describe("Unit Tests", async function(){
         await driver.findElement(By.xpath("/html/body/form[1]/button")).click();
 
         await driver.get(address);
-        
-        console.log("Task2 ID: "+task2.name);
-
-        await driver.findElement(By.id("title")).sendKeys(task2.name);
-        let dateInput = await driver.findElement(By.id("dueDate"))
-        await dateInput.click();
-        await dateInput.sendKeys(task2.date.replace('/', ''), Key.TAB, task2.time.replace(':',''));
-
-        await driver.findElement(By.xpath("/html/body/form[1]/button")).click();
-        
-        await driver.get(address);
 
         let testName = await driver.findElements(By.xpath("//*[contains(text(), \""+task.name+"\")]"));
         let testDate = await driver.findElements(By.id(task.name+"/"+task.date+" "+task.time));
