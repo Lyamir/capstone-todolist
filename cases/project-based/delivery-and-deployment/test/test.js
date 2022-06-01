@@ -4,7 +4,7 @@ const {Builder, By, Key, ulit, WebDriver, Webelement, WebElement} = require ("se
 const firefox = require("selenium-webdriver/firefox");
 const should = require("chai").should();
 
-let address = "http://localhost:3000" //to be changed
+let address = "http://localhost:8012" //to be changed
 
 function makeid(length) {
     var result           = '';
