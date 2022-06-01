@@ -65,14 +65,14 @@ before(function(){
     connected.should.be.true;
 });
 describe("Unit Tests", async function(){
-    it("It should add a task", async function(){
+    it("It should add tasks", async function(){
         let options = new firefox.Options();
         options.addArguments("-headless");
         let driver = await new Builder().forBrowser("firefox").setFirefoxOptions(options).build();
             
         await driver.get(address);
 
-        console.log("Task ID: "+task.name);
+        console.log("Task1 ID: "+task.name);
 
         await driver.findElement(By.id("title")).sendKeys(task.name);
         let dateInput = await driver.findElement(By.id("dueDate"))
@@ -81,6 +81,17 @@ describe("Unit Tests", async function(){
 
         await driver.findElement(By.xpath("/html/body/form[1]/button")).click();
 
+        await driver.get(address);
+        
+        console.log("Task2 ID: "+task2.name);
+
+        await driver.findElement(By.id("title")).sendKeys(task2.name);
+        let dateInput = await driver.findElement(By.id("dueDate"))
+        await dateInput.click();
+        await dateInput.sendKeys(task2.date.replace('/', ''), Key.TAB, task2.time.replace(':',''));
+
+        await driver.findElement(By.xpath("/html/body/form[1]/button")).click();
+        
         await driver.get(address);
 
         let testName = await driver.findElements(By.xpath("//*[contains(text(), \""+task.name+"\")]"));
@@ -132,14 +143,6 @@ describe("Unit Tests", async function(){
         let driver = await new Builder().forBrowser("firefox").setFirefoxOptions(options).build();
             
         await driver.get(address);
-        console.log("Task2 ID: "+task2.name);
-
-        await driver.findElement(By.id("title")).sendKeys(task2.name);
-        let dateInput = await driver.findElement(By.id("dueDate"))
-        await dateInput.click();
-        await dateInput.sendKeys(task2.date.replace('/', ''), Key.TAB, task2.time.replace(':',''));
-
-        await driver.findElement(By.xpath("/html/body/form[1]/button")).click();
 
         await driver.findElement(By.id("completeAll")).click();
 
@@ -164,7 +167,7 @@ describe("Unit Tests", async function(){
 
         await driver.quit();
     });
-    it("It should delete the created task", async function(){
+    it("It should delete the created tasks", async function(){
         let options = new firefox.Options();
         options.addArguments("-headless");
         let driver = await new Builder().forBrowser("firefox").setFirefoxOptions(options).build();
