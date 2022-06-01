@@ -65,7 +65,7 @@ before(function(){
     connected.should.be.true;
 });
 describe("Unit Tests", async function(){
-    it("It should add tasks", async function(){
+    it("It should add a task", async function(){
         let options = new firefox.Options();
         options.addArguments("-headless");
         let driver = await new Builder().forBrowser("firefox").setFirefoxOptions(options).build();
@@ -96,6 +96,46 @@ describe("Unit Tests", async function(){
 
         let testName = await driver.findElements(By.xpath("//*[contains(text(), \""+task.name+"\")]"));
         let testDate = await driver.findElements(By.id(task.name+"/"+task.date+" "+task.time));
+        
+        try{
+            testName.should.not.be.empty;
+        }
+        catch(e){
+            passed = false;
+            throw new Error(e);
+        }
+        
+        try{
+            testDate.should.not.be.empty;
+        }
+        catch(e){
+            passed = false;
+            throw new Error(e);
+        }
+
+        await driver.quit();
+    });
+    
+     it("It should add a second task", async function(){
+        let options = new firefox.Options();
+        options.addArguments("-headless");
+        let driver = await new Builder().forBrowser("firefox").setFirefoxOptions(options).build();
+            
+        await driver.get(address);
+
+	    console.log("Task2 ID: "+task2.name);
+
+        await driver.findElement(By.id("title")).sendKeys(task2.name);
+        let dateInput = await driver.findElement(By.id("dueDate"))
+        await dateInput.click();
+        await dateInput.sendKeys(task2.date.replace('/', ''), Key.TAB, task2.time.replace(':',''));
+
+        await driver.findElement(By.xpath("/html/body/form[1]/button")).click();
+        
+        await driver.get(address);
+
+        let testName = await driver.findElements(By.xpath("//*[contains(text(), \""+task2.name+"\")]"));
+        let testDate = await driver.findElements(By.id(task2.name+"/"+task2.date+" "+task2.time));
         
         try{
             testName.should.not.be.empty;
@@ -234,12 +274,14 @@ describe("Integration Testing", async function(){
 
         await driver.quit();
     });
-    it("Complete all tasks", async function(){
+    
+    it("Creates second task", async function(){
         let options = new firefox.Options();
         options.addArguments("-headless");
         let driver = await new Builder().forBrowser("firefox").setFirefoxOptions(options).build();
             
         await driver.get(address);
+
         console.log("Task2 ID: "+intTask2.name);
 
         await driver.findElement(By.id("title")).sendKeys(intTask2.name);
@@ -248,6 +290,29 @@ describe("Integration Testing", async function(){
         await dateInput.sendKeys(intTask2.date.replace('/', ''), Key.TAB, intTask2.time.replace(':',''));
 
         await driver.findElement(By.xpath("/html/body/form[1]/button")).click();
+        
+        let testName = await driver.findElements(By.xpath("//*[contains(text(), \""+intTask2.name+"\")]"));
+        let testDate = await driver.findElements(By.id(intTask2.name+"/"+intTask2.date+" "+intTask2.time));
+
+        await driver.get(address);
+
+        try{
+            testName.should.not.be.empty;
+            testDate.should.not.be.empty;
+        }
+        catch(e){
+            throw new Error(e);
+        }
+
+        await driver.quit();
+    });
+    
+    it("Complete all tasks", async function(){
+        let options = new firefox.Options();
+        options.addArguments("-headless");
+        let driver = await new Builder().forBrowser("firefox").setFirefoxOptions(options).build();
+            
+        await driver.get(address);
 
         await driver.findElement(By.id("completeAll")).click();
 
